@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import useAuth from "../Hooks/customHooks/users/useAuth";
+import { useAuthActions } from "../Hooks/customHooks/users/authActions";
+import { useNavigate } from "react-router-dom";
+import { FaSpinner } from "react-icons/fa";
 
 // function StickyNavbar() {
 //   const location = useLocation();
@@ -29,12 +33,23 @@ import { Link, useLocation } from "react-router-dom";
 //           : "bg-transparent"
 //       }`}
 //     >
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "../../Redux/actions/userActions";
 function StickyNavbar() {
   const location = useLocation();
-
+  // const { isLoggedIn, loading, user } = useAuth();
+  const { handleLogout } = useAuthActions();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { loggedIn, user, loading, error } = useSelector((state) => state.user);
+  // useEffect(() => {
+  //   dispatch(fetchUser());
+  // }, [dispatch]);
 
   useEffect(() => {
+    dispatch(fetchUser());
+
     const handleScroll = () => {
       if (window.scrollY > 50) {
         setIsScrolled(true);
@@ -47,9 +62,11 @@ function StickyNavbar() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [dispatch]);
 
-  const isProfileAuthPage = ["/ProfileAuth" , "/TherapistProfile"].includes(location.pathname);
+  const isProfileAuthPage = ["/ProfileAuth", "/TherapistProfile"].includes(
+    location.pathname
+  );
 
   return (
     <nav
@@ -71,15 +88,82 @@ function StickyNavbar() {
           </span>
         </a>
 
-        <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          <Link to="/login">
-            <button
-              type="button"
-              className="text-white bg-prim-button hover:bg-hover-button focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-lime-500 dark:focus:ring-blue-800"
-            >
-              Log in
-            </button>
-          </Link>
+        <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse gap-2">
+          {loggedIn ? (
+            <>
+              {user.id ? null : (
+                <>
+                  {" "}
+                  <Link to="/UserType">
+                    <button
+                      type="button"
+                      className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 mt-2"
+                    >
+                      Register as Practitioner
+                    </button>
+                  </Link>
+                  <p className="text-2xl mt-2">|</p>
+                </>
+              )}
+              <div className="relative">
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center space-x-2 text-white"
+                >
+                  <img
+                    src={`http://localhost:5001/${user.profilePicture}`}
+                    alt="Profile"
+                    className="w-12 h-12 rounded-full"
+                  />
+                  <span>
+                    {user.firstName} {user.lastName}
+                  </span>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg">
+                    <Link to="/profile">
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      >
+                        Your Profile
+                      </a>
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <Link to="/login">
+              <button
+                type="button"
+                className="text-white bg-prim-button hover:bg-hover-button focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-lime-500 dark:focus:ring-blue-800"
+              >
+                Log in
+              </button>
+            </Link>
+          )}
+
           <button
             data-collapse-toggle="navbar-cta"
             type="button"

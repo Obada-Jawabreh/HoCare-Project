@@ -18,13 +18,13 @@ const UserType = () => {
               Choose Your Account Type
             </h3>
             <div className="flex space-x-4 justify-center">
-              <Link to="/signup">
+              <Link to="/">
                 <button className="border border-prim-dark text-black rounded-lg p-4 w-32 h-32 flex flex-col items-center justify-center hover:bg-prim-dark hover:text-white transition">
                   <FaUserMd className="w-12 h-12 mb-2" />
                   Practitioner
                 </button>
               </Link>
-              <Link to="/sign">
+              <Link to="/RequestPage">
                 <button className="border border-prim-dark text-black rounded-lg p-4 w-32 h-32 flex flex-col items-center justify-center hover:bg-prim-dark hover:text-white transition">
                   <FaUser className="w-12 h-12 mb-2" />
                   User
