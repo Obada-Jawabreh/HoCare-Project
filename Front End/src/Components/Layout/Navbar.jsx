@@ -4,48 +4,23 @@ import useAuth from "../Hooks/customHooks/users/useAuth";
 import { useAuthActions } from "../Hooks/customHooks/users/authActions";
 import { useNavigate } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
-
-// function StickyNavbar() {
-//   const location = useLocation();
-
-//   const [isScrolled, setIsScrolled] = useState(false);
-
-//   useEffect(() => {
-//     const handleScroll = () => {
-//       if (window.scrollY > 50) {
-//         setIsScrolled(true);
-//       } else {
-//         setIsScrolled(false);
-//       }
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     // return () => {
-//     //   window.removeEventListener("scroll", handleScroll);
-//     // };
-//   }, []);
-
-//   return (
-//     <nav
-//       className={`fixed w-full z-30 transition-all duration-300 ${
-//         isScrolled
-//           ? "bg-[#44898F]/60 backdrop-blur-xl shadow-lg"
-//           : "bg-transparent"
-//       }`}
-//     >
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUser } from "../../Redux/actions/userActions";
+import { fetchUser } from "../../Redux/users/userThunk";
+import defaultImage from './../../assets/images/user.png'
+import logo from './../../assets/images/logo.png'
 function StickyNavbar() {
   const location = useLocation();
-  // const { isLoggedIn, loading, user } = useAuth();
   const { handleLogout } = useAuthActions();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dispatch = useDispatch();
-  const { loggedIn, user, loading, error } = useSelector((state) => state.user);
+  const { isAuthenticated, user, loading, error } = useSelector(
+    (state) => state.user
+  );
+
   // useEffect(() => {
-  //   dispatch(fetchUser());
-  // }, [dispatch]);
+  //   console.log("Auth state:", { isAuthenticated, user, loading, error });
+  // }, [isAuthenticated, user, loading, error]);
 
   useEffect(() => {
     dispatch(fetchUser());
@@ -67,7 +42,13 @@ function StickyNavbar() {
   const isProfileAuthPage = ["/ProfileAuth", "/TherapistProfile"].includes(
     location.pathname
   );
+  // ------------------------------------
+  const navigate = useNavigate();
 
+  const handleProfileClick = () => {
+    if (user.isApproved) navigate("/TherapistProfile");
+    else navigate("/ProfileUser");
+  };
   return (
     <nav
       className={`fixed w-full z-30 transition-all duration-300 ${
@@ -79,7 +60,7 @@ function StickyNavbar() {
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img
-            src="https://flowbite.com/docs/images/logo.svg"
+            src={logo}
             className="h-8"
             alt=" Logo"
           />
@@ -89,9 +70,9 @@ function StickyNavbar() {
         </a>
 
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse gap-2">
-          {loggedIn ? (
+          {isAuthenticated && user ? (
             <>
-              {user.id ? null : (
+              {user.request_id ? null : (
                 <>
                   {" "}
                   <Link to="/UserType">
@@ -114,6 +95,9 @@ function StickyNavbar() {
                     src={`http://localhost:5001/${user.profilePicture}`}
                     alt="Profile"
                     className="w-12 h-12 rounded-full"
+                    onError={(e) => {
+                      e.target.src = defaultImage;
+                    }} 
                   />
                   <span>
                     {user.firstName} {user.lastName}
@@ -135,14 +119,12 @@ function StickyNavbar() {
                 </button>
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg">
-                    <Link to="/profile">
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                      >
-                        Your Profile
-                      </a>
-                    </Link>
+                    <button
+                      onClick={handleProfileClick} // استخدم الدالة عند النقر على الزر
+                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                    >
+                      Your Profile
+                    </button>
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
@@ -218,10 +200,10 @@ function StickyNavbar() {
             </li>
             <li
               className={`relative group ${
-                location.pathname === "/Physiotherapy" ? "active" : ""
+                location.pathname === "/Catalog" ? "active" : ""
               }`}
             >
-              <Link to="/Physiotherapy">
+              <Link to="/Catalog">
                 <a
                   href="#"
                   className="block py-2 px-3 md:p-0 text-prime-white rounded hover:bg-gray-100 md:hover:bg-transparent dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
@@ -231,7 +213,7 @@ function StickyNavbar() {
               </Link>
               <span
                 className={`absolute top-full mt-1 bottom-0 left-0 h-1 bg-prim-dark transition-all duration-500 ${
-                  location.pathname === "/Physiotherapy"
+                  location.pathname === "/Catalog"
                     ? "w-full"
                     : "w-0 group-hover:w-full group-hover:left-0"
                 }`}

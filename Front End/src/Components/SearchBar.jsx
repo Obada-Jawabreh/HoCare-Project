@@ -1,59 +1,69 @@
-import React, { useState } from 'react';
-
-const SearchBar = ({ onSearch }) => {
+import React, { useState } from "react";
+const SearchBar = ({ onSearch, onFilterChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const professions = ['All', 'Home Nurse', 'Physical Therapist'];
 
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    if (onSearch) {
-      onSearch(value);
-    }
+    onSearch(value);
   };
 
   return (
-    <div className="flex justify-center mb-6">
-      <form className="w-full max-w-2xl" onSubmit={(e) => e.preventDefault()}>
-        <label
-          htmlFor="default-search"
-          className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-        >
-          Search
-        </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-            <svg
-              className="w-4 h-4 text-gray-500 dark:text-gray-400"
-              aria-hidden="true"
-              fill="none"
-              viewBox="0 0 20 20"
+    <div className="max-w-3xl mx-auto px-4 mb-8">
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+        {/* Search Input */}
+        <div className="relative w-full sm:w-96">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-4 w-4 text-gray-400" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
             >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
               />
             </svg>
           </div>
           <input
-            type="search"
-            id="default-search"
-            className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-[#F6F2FF] focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Search doctor..."
+            type="text"
+            placeholder="Search..."
             value={searchTerm}
             onChange={handleInputChange}
-            required
+            className="w-full pl-9 pr-4 py-2 text-sm bg-[#74C0EE] bg-opacity-20 rounded-lg focus:outline-none focus:ring-2 focus:ring-prim-button placeholder-gray-500 text-gray-900"
           />
-          <button
-            type="submit"
-            className="text-white absolute right-2.5 bottom-2.5 bg-prim-button hover:bg-hover-button focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            Find Doctor
-          </button>
         </div>
-      </form>
+
+        {/* Filter Select */}
+        <div className="w-full sm:w-48">
+          <select
+            onChange={(e) => onFilterChange(e.target.value)}
+            className="w-full px-4 py-2 text-sm bg-[#74C0EE] bg-opacity-20 rounded-lg focus:outline-none focus:ring-2 focus:ring-prim-button text-gray-900 appearance-none cursor-pointer"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 0.75rem center',
+              backgroundSize: '1.25em 1.25em',
+              paddingRight: '2.5rem'
+            }}
+          >
+            {professions.map((profession) => (
+              <option 
+                key={profession} 
+                value={profession}
+                className="bg-white"
+              >
+                {profession}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
     </div>
   );
 };

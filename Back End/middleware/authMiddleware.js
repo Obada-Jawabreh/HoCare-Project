@@ -40,8 +40,8 @@ const auth = (req, res, next) => {
   try {
     if (!token) {
       return res
-        .status(401)
-        .json({ loggedIn: false, message: "No token provided" });
+        .status(201)
+        .json({ loggedIn: false, message: "You must be logged in" });
     }
     const user = jwt.verify(token, process.env.JWT_SECRET);
     req.user = user;
@@ -53,6 +53,7 @@ const auth = (req, res, next) => {
     res.status(500).send("Error verifying token: " + error.message);
   }
 };
+module.exports = auth;
 
 // const checkAuthStatus = (req, res) => {
 //   const token = req.cookies.token;
@@ -69,4 +70,3 @@ const auth = (req, res, next) => {
 //   }
 // };
 
-module.exports = auth;

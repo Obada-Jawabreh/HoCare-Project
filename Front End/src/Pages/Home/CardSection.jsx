@@ -1,54 +1,88 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Card from "../../Components/Card";
 import { motion } from "framer-motion";
-import Physiotherapy from "../../assets/images/Physiotherapy.jpg";
-import nursing from "../../assets/images/nursing.jpg";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import get from "../../Components/Hooks/customHooks/get";
 
-function CardSection() {
-  return (
-    <section className="bg-gray-100 py-12">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Choose Your Health Service</h2>
-        <div className="flex flex-col md:flex-row justify-center items-stretch gap-6">
-          <ServiceCard
-            title="Physiotherapy"
-            image={Physiotherapy}
-            description="Specialized physiotherapy services to improve movement and physical performance"
-            link="/Physiotherapy"
-          />
-          <ServiceCard
-            title="Home Nursing"
-            image={nursing}
-            description="High-quality nursing care in the comfort of your home"
-            link="/HomeNursing"
-          />
+const ProviderSection = () => {
+  const { data: physiotherapy } = get("provider", "physiotherapy");
+  const { data: nursing } = get("provider", "nursing");
+
+  const SliderSection = ({ title, providers }) => {
+    const [currentIndex, setCurrentIndex] = React.useState(0);
+
+    const slideLeft = () => {
+      setCurrentIndex((prev) => (prev > 0 ? prev - 1 : 0));
+    };
+
+    const slideRight = () => {
+      setCurrentIndex((prev) => 
+        prev < providers.length - 3 ? prev + 1 : prev
+      );
+    };
+
+    return (
+      <div className="mb-16">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-800">{title}</h2>
+          <div className="flex gap-4">
+            <button
+              onClick={slideLeft}
+              className="p-2 rounded-full bg-prim-button text-white hover:bg-hover-button transition-colors"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button
+              onClick={slideRight}
+              className="p-2 rounded-full bg-prim-button text-white hover:bg-hover-button transition-colors"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
         </div>
+
+        <div className="relative overflow-hidden">
+          <motion.div
+            className="flex gap-6"
+            animate={{ x: `-${currentIndex * 320}px` }}
+            transition={{ duration: 0.5 }}
+          >
+            {providers?.map((provider) => (
+              <div key={provider.user_id} className="flex-shrink-0 w-[300px]">
+                <Card provider={provider} />
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <section className="py-16 bg-gradient-to-b from-white to-gray-50">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+            Our Healthcare Professionals
+          </h1>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Choose from our experienced team of healthcare providers who are ready to assist you with personalized care and professional service.
+          </p>
+        </div>
+
+        <SliderSection 
+          title="Physical Therapists" 
+          providers={physiotherapy} 
+        />
+        
+        <SliderSection 
+          title="Home Nursing Services" 
+          providers={nursing} 
+        />
       </div>
     </section>
   );
-}
+};
 
-function ServiceCard({ title, image, description, link }) {
-  return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className="bg-white rounded-lg shadow-md overflow-hidden w-full md:w-[calc(50%-0.75rem)] max-w-md"
-    >
-      <Link to={link} className="block h-full">
-        <div className="relative pb-[56.25%]">
-          <img src={image} alt={title} className="absolute top-0 left-0 w-full h-full object-cover" />
-        </div>
-        <div className="p-5">
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">{title}</h3>
-          <p className="text-gray-600 mb-4 text-sm">{description}</p>
-          <button className="bg-prim-button text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-hover-button transition duration-300">
-            Learn More
-          </button>
-        </div>
-      </Link>
-    </motion.div>
-  );
-}
-
-export default CardSection;
+export default ProviderSection;

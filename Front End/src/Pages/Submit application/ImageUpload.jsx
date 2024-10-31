@@ -1,16 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUser } from "../../Redux/actions/userActions";
 
-const ImageUpload = ({
-  previewImage,
-  handleFileChange,
-  mobileOnly = false,
-}) => {
-  const { user, loading, error } = useSelector((state) => state.user);
-  const [imageSrc, setImageSrc] = useState(
-    previewImage || user?.profilePicture || ""
-  );
+const ImageUpload = ({ previewImage, handleFileChange, user, mobileOnly = false }) => {
+  const [imageSrc, setImageSrc] = useState(previewImage || user?.profilePicture || "");
+
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -18,6 +10,14 @@ const ImageUpload = ({
       setImageSrc(`http://localhost:5001/${user.profilePicture}`);
     }
   }, [user]);
+
+  // التحقق من الـ previewImage
+  useEffect(() => {
+    if (previewImage) {
+      setImageSrc(previewImage); // تحديث الصورة إذا كانت موجودة
+    }
+  }, [previewImage]);
+
   const handleImageClick = () => {
     fileInputRef.current.click();
   };
@@ -62,16 +62,7 @@ const ImageUpload = ({
         id="profilePicture"
         accept="image/*"
         className="hidden"
-        onChange={(e) => {
-          handleFileChange(e);
-          if (e.target.files[0]) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              setImageSrc(reader.result);
-            };
-            reader.readAsDataURL(e.target.files[0]);
-          }
-        }}
+        onChange={handleFileChange}
       />
       <p className="mt-2 text-sm">Click to upload profile picture</p>
     </div>

@@ -5,21 +5,21 @@ import Sidebar from "./Sidebar";
 import ImageUpload from "./ImageUpload";
 import FormFields from "./FormFields";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUser } from "../../Redux/actions/userActions";
+import { fetchUser } from "../../Redux/users/userThunk";
 
 const PractitionerRegistrationForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loggedIn, user, loading, error } = useSelector((state) => state.user);
+  const { isAuthenticated, user, loading, error } = useSelector(
+    (state) => state.user
+  );
   // ------------------------------------------------------------------------------
-  if (!user) {
-    navigate("/");
-  } else if (user && !loading && loggedIn) {
-    navigate("/RequestPage");
-  }
-  useEffect(() => {
-    dispatch(fetchUser());
-  }, [dispatch]);
+  // if (!user) {
+  //   navigate("/");
+  // } else if (user && !loading && isAuthenticated) {
+  //   navigate("/RequestPage");
+  // }
+
   // ------------------------------------------------------------------------------
   const [formData, setFormData] = useState({
     fullName: "",
@@ -34,10 +34,19 @@ const PractitionerRegistrationForm = () => {
   const [previewImage, setPreviewImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        dispatch(fetchUser());
+      } else {
+        navigate("/RequestPage");
+      }
+    }
+  }, [user, dispatch, navigate]);
+  
 
   useEffect(() => {
     if (user) {
-      dispatch(fetchUser());
       setFormData((prevState) => ({
         ...prevState,
         phoneNumber: user.phoneNumber || "",
@@ -46,12 +55,12 @@ const PractitionerRegistrationForm = () => {
           : null,
       }));
       setPreviewImage(
-        user.profilePicture
+        user.profilePicture   
           ? `http://localhost:5001/${user.profilePicture}`
           : null
       );
     }
-  }, [user, dispatch]);
+  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -61,16 +70,16 @@ const PractitionerRegistrationForm = () => {
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     setFormData({ ...formData, [name]: files[0] });
-
+  
     if (name === "profilePicture" && files[0]) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviewImage(reader.result);
+        setPreviewImage(reader.result);  
       };
       reader.readAsDataURL(files[0]);
     }
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -127,6 +136,7 @@ const PractitionerRegistrationForm = () => {
                 previewImage={previewImage}
                 handleFileChange={handleFileChange}
                 mobileOnly={true}
+                user={user}
               />
               <FormFields
                 formData={formData}

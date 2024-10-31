@@ -14,12 +14,11 @@ class Requests {
     resume
   ) {
     try {
-      const [newRequest] = await knex("Requests")
+      const [newRequest] = await knex("applicants_requests")
         .insert({
           user_id: userId,
           fullName,
           profession,
-          aboutMe,
           certificate,
           licenseToPractice,
           resume,
@@ -29,6 +28,7 @@ class Requests {
       await knex("users").where("user_id", userId).update({
         phoneNumber,
         profilePicture,
+        aboutMe,
       });
 
       return newRequest;
@@ -37,6 +37,8 @@ class Requests {
       throw new Error("Error creating request");
     }
   }
+
+  // ---------------------------
 }
 
 module.exports = Requests;

@@ -2,9 +2,15 @@ import React from "react";
 import Signup from "./../../assets/images/Signup.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../../Redux/users/userThunk";
+
 function SignUp() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error, isAuthenticated } = useSelector(
+    (state) => state.user
+  );
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,21 +25,14 @@ function SignUp() {
       [name]: value,
     }));
   };
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:5001/api/users/register/user",
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
-      navigate("/");
-    } catch (error) {
-      console.error("Error logging in:", error);
-    }
+    dispatch(registerUser(formData));
   };
+
+  if (isAuthenticated) {
+    navigate("/");
+  }
   return (
     <div className="bg-prime-white min-h-screen flex items-center justify-center py-6">
       <div className="max-w-screen-xl w-full bg-white shadow sm:rounded-lg flex">

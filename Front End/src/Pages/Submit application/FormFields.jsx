@@ -1,10 +1,20 @@
-import React from 'react';
+import React from "react";
 
-const FormFields = ({ formData, handleInputChange, handleFileChange, handleSubmit }) => (
+const FormFields = ({
+  formData,
+  handleInputChange,
+  handleFileChange,
+  handleSubmit,
+}) => (
   <form onSubmit={handleSubmit} className="space-y-4">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name</label>
+        <label
+          htmlFor="fullName"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Full Name
+        </label>
         <input
           type="text"
           name="fullName"
@@ -16,7 +26,12 @@ const FormFields = ({ formData, handleInputChange, handleFileChange, handleSubmi
         />
       </div>
       <div>
-        <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">Phone Number</label>
+        <label
+          htmlFor="phoneNumber"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Phone Number
+        </label>
         <input
           type="tel"
           name="phoneNumber"
@@ -29,7 +44,12 @@ const FormFields = ({ formData, handleInputChange, handleFileChange, handleSubmi
       </div>
     </div>
     <div>
-      <label htmlFor="profession" className="block text-sm font-medium text-gray-700">Profession</label>
+      <label
+        htmlFor="profession"
+        className="block text-sm font-medium text-gray-700"
+      >
+        Profession
+      </label>
       <select
         name="profession"
         id="profession"
@@ -39,12 +59,17 @@ const FormFields = ({ formData, handleInputChange, handleFileChange, handleSubmi
         value={formData.profession}
       >
         <option value="">Select Profession</option>
-        <option value="physicalTherapist">Physical Therapist</option>
-        <option value="homeNurse">Home Nurse</option>
+        <option value="Physical Therapist">Physical Therapist</option>
+        <option value="Home Nurse">Home Nurse</option>
       </select>
     </div>
     <div>
-      <label htmlFor="aboutMe" className="block text-sm font-medium text-gray-700">About Me</label>
+      <label
+        htmlFor="aboutMe"
+        className="block text-sm font-medium text-gray-700"
+      >
+        About Me
+      </label>
       <textarea
         name="aboutMe"
         id="aboutMe"
@@ -57,7 +82,12 @@ const FormFields = ({ formData, handleInputChange, handleFileChange, handleSubmi
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label htmlFor="certificate" className="block text-sm font-medium text-gray-700">Certificate</label>
+        <label
+          htmlFor="certificate"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Certificate
+        </label>
         <input
           type="file"
           name="certificate"
@@ -68,7 +98,12 @@ const FormFields = ({ formData, handleInputChange, handleFileChange, handleSubmi
         />
       </div>
       <div>
-        <label htmlFor="licenseToPractice" className="block text-sm font-medium text-gray-700">License to Practice</label>
+        <label
+          htmlFor="licenseToPractice"
+          className="block text-sm font-medium text-gray-700"
+        >
+          License to Practice
+        </label>
         <input
           type="file"
           name="licenseToPractice"
@@ -80,7 +115,12 @@ const FormFields = ({ formData, handleInputChange, handleFileChange, handleSubmi
       </div>
     </div>
     <div>
-      <label htmlFor="resume" className="block text-sm font-medium text-gray-700">Resume</label>
+      <label
+        htmlFor="resume"
+        className="block text-sm font-medium text-gray-700"
+      >
+        Resume
+      </label>
       <input
         type="file"
         name="resume"
